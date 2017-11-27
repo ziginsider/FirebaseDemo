@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/menu_add"
+        android:icon="@drawable/ic_new"
+        android:title="Add"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_save"
+        android:icon="@drawable/ic_save"
+        android:title="Save"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_remove"
+        android:icon="@drawable/ic_remove"
+        android:title="Remove"
+        app:showAsAction="always" />
 
 </menu>
