@@ -6,8 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import io.github.ziginsider.firebasedemo.Adapter.ListViewAdapter;
 import io.github.ziginsider.firebasedemo.Model.User;
@@ -27,14 +28,16 @@ import io.github.ziginsider.firebasedemo.Model.User;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText input_name, input_email;
+    private EditText input_name, input_email;
     private ListView list_data;
     private ProgressBar circular_progress;
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
 
-    List<User> list_users = new ArrayList<>();
+    private List<User> list_users = new ArrayList<>();
+
+    private User selectedUser; //hold selected user
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,16 @@ public class MainActivity extends AppCompatActivity {
         input_email = (EditText) findViewById(R.id.email);
         list_data = (ListView) findViewById(R.id.list_data);
 
+        list_data.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                User user = (User) adapterView.getItemAtPosition(i);
+                selectedUser = user;
+                input_name.setText(user.getName());
+                input_email.setText(user.getEmail());
+            }
+        });
+
         //Firebase
         initFirebase();
         addEventFirebaseListener();
@@ -63,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         circular_progress.setVisibility(View.VISIBLE);
         list_data.setVisibility(View.INVISIBLE);
 
-        mDatabaseReference.child("user")
+        mDatabaseReference.child("users")
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -104,7 +117,47 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add) {
-
+            createUser();
+        } else if (item.getItemId() == R.id.menu_save) {
+            User user = new User(selectedUser.getUid(),
+                    input_name.getText().toString(),
+                    input_email.getText().toString());
+            updateUser(user);
+        } else if (item.getItemId() == R.id.menu_remove) {
+            deleteUser(selectedUser);
         }
+        return true;
+    }
+
+    private void deleteUser(User selectedUser) {
+        mDatabaseReference.child("users")
+                .child(selectedUser.getUid())
+                .removeValue();
+        clearEditText();
+    }
+
+    private void updateUser(User user) {
+        mDatabaseReference.child("users")
+                .child(user.getUid())
+                .child("name")
+                .setValue(user.getName());
+        mDatabaseReference.child("users")
+                .child(user.getUid())
+                .child("email")
+                .setValue(user.getEmail());
+        clearEditText();
+    }
+
+    private void createUser() {
+        User user = new User(UUID.randomUUID().toString(),
+                input_name.getText().toString(),
+                input_email.getText().toString());
+        mDatabaseReference.child("users").child(user.getUid()).setValue(user);
+        clearEditText();
+    }
+
+    void clearEditText() {
+        input_email.setText("");
+        input_name.setText("");
     }
 }
