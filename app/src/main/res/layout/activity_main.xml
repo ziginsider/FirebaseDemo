@@ -52,4 +52,13 @@
         android:layout_below="@+id/input_email">
     </ListView>
 
+    <ProgressBar
+        android:id="@+id/circular_progress"
+        android:visibility="invisible"
+        android:layout_centerInParent="true"
+        android:theme="@style/CircularProgress"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>
