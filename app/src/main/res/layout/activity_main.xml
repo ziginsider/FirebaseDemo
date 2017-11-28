@@ -45,6 +45,11 @@
 
     </android.support.design.widget.TextInputLayout>
 
-
+    <ListView
+        android:id="@+id/list_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_email">
+    </ListView>
 
 </RelativeLayout>
