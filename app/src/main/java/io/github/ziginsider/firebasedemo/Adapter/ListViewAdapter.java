@@ -23,6 +23,11 @@ public class ListViewAdapter extends BaseAdapter {
     List<User> listUsers;
     LayoutInflater inflater;
 
+    public ListViewAdapter(Activity activity, List<User> listUsers) {
+        this.activity = activity;
+        this.listUsers = listUsers;
+    }
+
     @Override
     public int getCount() {
         return listUsers.size();

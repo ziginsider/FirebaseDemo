@@ -4,8 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -16,6 +18,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.github.ziginsider.firebasedemo.Adapter.ListViewAdapter;
+import io.github.ziginsider.firebasedemo.Model.User;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
+
+    List<User> list_users = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +67,18 @@ public class MainActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (list_users.size() > 0) {
+                    list_users.clear();
+                }
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    User user = postSnapshot.getValue(User.class);
+                    list_users.add(user);
+                }
+                ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, list_users);
+                list_data.setAdapter(adapter);
 
+                circular_progress.setVisibility(View.INVISIBLE);
+                list_data.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -78,5 +99,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_add) {
+
+        }
     }
 }
