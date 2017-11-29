@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 input_name.getText().toString(),
                 input_email.getText().toString());
         mDatabaseReference.child("users").child(user.getUid()).setValue(user);
+
         clearEditText();
     }
 
